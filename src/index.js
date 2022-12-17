@@ -3,104 +3,117 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 
 class Present extends React.Component {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         value: props.value,
-    //     }
-    // }
+    constructor(props) {
+        super(props);
+        this.state = {
+            opened: false,
+        };
+    }
     render() {
         return (
-            <button className="present" onClick={()=> console.log(this.props.prize)}>
-                {this.props.prize}
+            <button className="present" onClick={() => this.open()}>
+                {this.props.available ? this.props.contents : this.props.label}
             </button>
         );
     }
-    // click() {
-    //     // DO NOT DO THIS, state.value should be treated as immutable
-    //     // this.state.value = 'X';
-
-    //     this.setState({value: 'X'});
-
-    //     // setState is async so this does not print anything
-    //     // https://stackoverflow.com/questions/54713510/console-log-after-setstate-doesnt-return-the-updated-state
-    //     console.log(this.state.value);
-    // }
-    // componentDidUpdate() {
-    //     console.log(this.state.value);
-    // }
+    click() {
+        console.log(this.props.contents);
+    }
 }
 
 class Tree extends React.Component {
-    // constructor(props) {
-    //     super(props);
-    //     // randomise order of presents
-    //     // layout presents in tree shape
-    // }
-    render() {
-        const presents = [];
-        for (const [key, val] of Object.entries(this.props.puzzles)) {
-            presents.push(
-                <Present
-                    prize={val}
+    constructor(props) {
+        super(props);
 
-                    // this needs a .bind because of weird 'this' behaviour in javascript
-                    // https://www.freecodecamp.org/news/this-is-why-we-need-to-bind-event-handlers-in-class-components-in-react-f7ea1a6f93eb/
-                    // click={this.click}
-                    // click={this.click.bind(this)}
-                    // onClick={()=> this.onClickPresent(i)}
+        // randomise order of presents so it's different each time
+        const shuffled = Array
+            .from(Array(10).keys())
+            .map(value => ({ value, rand: Math.random() }))
+            .sort((a, b) => a.rand - b.rand)
+            .map(({ value }) => value)
+        ;
+        this.state = {
+            order: shuffled,
+        };
+    }
+    render() {
+        const presents = this.props.puzzles.map((puzzle, idx) => {
+            return (
+                <Present
+                    label={this.props.puzzles.length-idx}
+                    contents={puzzle.question}
+                    available={idx <= this.props.nSolved}
+                    key={idx}
                 />
-            )
-        }
+            );
+        });
+        const shuffledPresents = this.state.order.map((newIdx) => {
+            return presents[newIdx]
+        });
         return (
             <div>
                 <div className="tree-row">
-                    {presents}
+                    {shuffledPresents}
                 </div>
             </div>
         );
     }
-    // onClickPresent(i) {
-    //     const presents = this.state.presents.slice();
-    //     if (this.state.xTurn) {
-    //         presents[i] = 'X';
-    //     } else {
-    //         presents[i] = 'O';
-    //     }
-    //     this.setState({
-    //         presents: presents,
-    //         xTurn: !this.state.xTurn,
-    //     });
-    // }
 }
 
 class Card extends React.Component {
-    puzzles = {
-        'squash': '🤜🍎🤛',
-        'vegetarian': '🍅🥦🧀',
-        'juil': '✡️👠',
-        'privacy': '🚫🤨️⚡',
-        'jonny': '️😬🦵',
-        'neural topic modelling': '🧠🎩👗',
-        'yang': '🌞🍋',
-        'board games': '🥱👨‍❤️‍💋‍👨🤔',
-        'marga': '🤰🇬🇭',
-        'phd': '🌄💩',
-    }
+    puzzles = [
+        {question: '🤜🍎🤛', answer: 'squash'},
+        {question: '🍅🥦🧀', answer: 'vegetarian'},
+        {question: '✡️👠', answer: 'juil'},
+        {question: '🚫🤨️⚡', answer: 'privacy'},
+        {question: '️😬🦵', answer: 'jonny'},
+        {question: '🧠🎩👗', answer: 'neural topic modelling'},
+        {question: '🌞🍋', answer: 'yang'},
+        {question: '🥱👨‍❤️‍💋‍👨🤔', answer: 'board games'},
+        {question: '🤰🇬🇭', answer: 'marga'},
+        {question: '🌄💩', answer: 'phd'},
+    ]
     constructor(props) {
         super(props);
         this.state = {
-            solved: Array(10).fill(false),
+            nSolved: 0,
+            feedback: "",
+        };
+    }
+    attempt(event) {
+        event.preventDefault();  // prevents page from refreshing
+        const guess = event.currentTarget.elements.guess.value.toLowerCase();
+        if (this.puzzles[this.state.nSolved].answer === guess) {
+            this.setState({
+                nSolved: this.state.nSolved + 1,
+                feedback: "Correct!",
+            });
+            event.currentTarget.elements.guess.value = "";
+        } else {
+            this.setState({
+                nSolved: this.state.nSolved,
+                feedback: "Wrong :(",
+            });
         }
     }
     render() {
+        const finished = this.state.nSolved >= this.puzzles.length
+        const feedback = finished ? "FINISHED" : this.state.feedback;
         return (
             <div className="card">
                 <div className="card-tree">
-                    <Tree puzzles={this.puzzles} />
+                    <Tree puzzles={this.puzzles} nSolved={this.state.nSolved} />
                 </div>
-                <div className="card-info">
-                    <input>{/* input text */}</input>
+                <div className="card-input">
+                    <form onSubmit={(event) => this.attempt(event)}>
+                        <label>{feedback}</label>
+                        <input
+                            type="text"
+                            disabled={finished}
+                            id="guess"
+                            placeholder="Guess"
+                        />
+                    </form>
                 </div>
             </div>
         );
