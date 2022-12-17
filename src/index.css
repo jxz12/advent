@@ -13,31 +13,24 @@ body {
     display: table;
   }
   
-  .status {
-    margin-bottom: 10px;
-  }
-  
-  .present {
-    background: #fff;
+  .present-locked, .present-unlocked {
     border: 1px solid #999;
     float: left;
     font-size: 24px;
     font-weight: bold;
     line-height: 34px;
-    height: 34px;
+    width: 100px;
+    height: 100px;
     margin-right: -1px;
     margin-top: -1px;
     padding: 0;
     text-align: center;
-    width: 34px;
   }
-  
-  .present:focus {
-    outline: none;
+  .present-locked {
+    background: #5d5;
   }
-  
-  .kbd-navigation .present:focus {
-    background: #ddd;
+  .present-unlocked {
+    background: #fff;
   }
   
   .card {

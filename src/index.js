@@ -6,18 +6,25 @@ class Present extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            opened: false,
+            opened: props.opened,
         };
     }
     render() {
         return (
-            <button className="present" onClick={() => this.open()}>
-                {this.props.available ? this.props.contents : this.props.label}
+            <button
+                className={`present-${this.props.locked ? "locked" : "unlocked"}`}
+                onClick={() => this.open()}
+            >
+                {this.state.opened ? this.props.contents : this.props.label}
             </button>
         );
     }
-    click() {
-        console.log(this.props.contents);
+    open() {
+        if (!this.props.locked) {
+            this.setState({
+                opened: true,
+            });
+        }
     }
 }
 
@@ -27,7 +34,7 @@ class Tree extends React.Component {
 
         // randomise order of presents so it's different each time
         const shuffled = Array
-            .from(Array(10).keys())
+            .from(Array(props.puzzles.length).keys())
             .map(value => ({ value, rand: Math.random() }))
             .sort((a, b) => a.rand - b.rand)
             .map(({ value }) => value)
@@ -42,7 +49,7 @@ class Tree extends React.Component {
                 <Present
                     label={this.props.puzzles.length-idx}
                     contents={puzzle.question}
-                    available={idx <= this.props.nSolved}
+                    locked={idx > this.props.nSolved}
                     key={idx}
                 />
             );
@@ -50,12 +57,18 @@ class Tree extends React.Component {
         const shuffledPresents = this.state.order.map((newIdx) => {
             return presents[newIdx]
         });
+        const rows = [];
+        let i=0;
+        while (i<presents.length) {
+            const row = [];
+            for (let j=0; j<rows.length; j++) {
+                row.push(shuffledPresents[i]);
+                i++;
+            }
+            rows.push(<div className="tree-row" key={rows.length+1}>{row}</div>);
+        }
         return (
-            <div>
-                <div className="tree-row">
-                    {shuffledPresents}
-                </div>
-            </div>
+            <div>{rows}</div>
         );
     }
 }
@@ -65,13 +78,13 @@ class Card extends React.Component {
         {question: '🤜🍎🤛', answer: 'squash'},
         {question: '🍅🥦🧀', answer: 'vegetarian'},
         {question: '✡️👠', answer: 'juil'},
-        {question: '🚫🤨️⚡', answer: 'privacy'},
-        {question: '️😬🦵', answer: 'jonny'},
-        {question: '🧠🎩👗', answer: 'neural topic modelling'},
-        {question: '🌞🍋', answer: 'yang'},
-        {question: '🥱👨‍❤️‍💋‍👨🤔', answer: 'board games'},
-        {question: '🤰🇬🇭', answer: 'marga'},
-        {question: '🌄💩', answer: 'phd'},
+        // {question: '🚫🤨️⚡', answer: 'privacy'},
+        // {question: '️😬🦵', answer: 'jonny'},
+        // {question: '🧠🎩👗', answer: 'neural topic modelling'},
+        // {question: '🌞🍋', answer: 'yang'},
+        // {question: '🥱👨‍❤️‍💋‍👨🤔', answer: 'board games'},
+        // {question: '🤰🇬🇭', answer: 'marga'},
+        // {question: '🌄💩', answer: 'phd'},
     ]
     constructor(props) {
         super(props);
@@ -81,7 +94,7 @@ class Card extends React.Component {
         };
     }
     attempt(event) {
-        event.preventDefault();  // prevents page from refreshing
+        event.preventDefault();  // prevents page from refreshing lol
         const guess = event.currentTarget.elements.guess.value.toLowerCase();
         if (this.puzzles[this.state.nSolved].answer === guess) {
             this.setState({
@@ -98,7 +111,19 @@ class Card extends React.Component {
     }
     render() {
         const finished = this.state.nSolved >= this.puzzles.length
-        const feedback = finished ? "FINISHED" : this.state.feedback;
+        const feedback = finished ? "WELL DONE!" : this.state.feedback;
+        // add star to top if finished
+        // (
+        //     <div className="tree_row" key={0}>
+        //         <Present
+        //             label=""
+        //             contents="⭐"
+        //             opened={true}
+        //             locked={false}
+        //             key={0}
+        //         />
+        //     </div>
+        // )
         return (
             <div className="card">
                 <div className="card-tree">
