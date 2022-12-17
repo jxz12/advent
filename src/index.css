@@ -27,7 +27,7 @@ body {
 .present-trunk {
   border: 1px solid #999;
   float: left;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
   line-height: 34px;
   width: 100px;
@@ -44,19 +44,34 @@ body {
 .present-unlocked {
   background: #faa;
   cursor: pointer;
+  transition-duration: .3s;
+}
+.present-unlocked:hover {
+  background: #ff4;
+  transition-duration: .3s;
 }
 .present-opened {
   background: #fcfffc;
 }
+@keyframes star {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(359deg); }
+}
 .present-star {
   border: 0px;
+  animation-name: star;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
 }
 .present-trunk {
   border: 0px;
   background: #742;
 }
 .guess,
-.feedback,
+.message-welcome,
+.message-correct,
+.message-incorrect,
+.message-finish,
 .attempt {
   display: flex;
   flex-direction: row;
@@ -64,6 +79,41 @@ body {
 }
 .guess {
   margin-top: 50px;
+}
+@keyframes correct {
+  0%   { color: #0f0; }
+  50%  { color: #000; }
+}
+@keyframes incorrect {
+  0%   { color: #f00; }
+  50%  { color: #000; }
+}
+@keyframes finished {
+  0%   { color: red; }
+  14%  { color: orange; }
+  29%  { color: goldenrod; }
+  43%  { color: green; }
+  58%  { color: blue; }
+  72%  { color: indigo; }
+  86%  { color: violet; }
+  100% { color: red; }
+}
+.message-correct,
+.message-incorrect {
+  animation-duration: .5s;
+  animation-iteration-count: 2;
+  animation-timing-function: step-end;
+}
+.message-correct {
+  animation-name: correct;
+}
+.message-incorrect {
+  animation-name: incorrect;
+}
+.message-finished {
+  animation-name: finished;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
 }
 .attempt {
   margin-top: 25px;

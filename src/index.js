@@ -100,40 +100,51 @@ class Card extends React.Component {
         {question: '🥱👨‍❤️‍💋‍👨🤔', answer: 'board games'},
         {question: '🤰🇬🇭', answer: 'marga'},
         {question: '🌄💩', answer: 'phd'},
-    ]
+    ];
+    messages = {
+        'welcome': 'Merry Christmas Pamela & SFS! Enjoy this advent calendar :)',
+        'correct': 'Correct!',
+        'incorrect': 'Wrong :(',
+        'finished': '🎄 🧑‍🎄 ❄️ Fröhliche Weihnachten! 🎁 💶 ☃️',
+    };
     constructor(props) {
         super(props);
         this.state = {
             nSolved: 0,
-            feedback: 'Merry Christmas!',
+            nAttempts: 0,
+            message: 'welcome',
         };
     }
     attempt(event) {
         event.preventDefault();  // prevents page from refreshing lol
+
         const guess = event.currentTarget.elements.guess.value.toLowerCase();
         const answer = this.puzzles[this.state.nSolved].answer;
+
+        let message = 'welcome';
+        let nSolved = this.state.nSolved;
         if (guess === answer) {
-            this.setState({
-                nSolved: this.state.nSolved + 1,
-                feedback: 'Correct!',
-            });
+            message = 'correct'
+            nSolved += 1;
             event.currentTarget.elements.guess.value = '';
         } else if (guess === 'sfs') {
-            this.setState({
-                nSolved: this.puzzles.length,
-                feedback: 'Cheater!',
-            });
+            nSolved = this.puzzles.length;
         } else {
-            this.setState({
-                nSolved: this.state.nSolved,
-                feedback: 'Wrong :(',
-            });
+            message = 'incorrect';
         }
+        if (nSolved >= this.puzzles.length) {
+            message = 'finished';
+        }
+        this.setState({
+            nSolved: nSolved,
+            nAttempts: this.state.nAttempts + 1,
+            message: message,
+        })
     }
     render() {
-        const finished = this.state.nSolved >= this.puzzles.length
-        const feedback = finished ? '🎄 🧑‍🎄 ❄️ Fröhliche Weihnachten! 🎁 💶 ☃️' : this.state.feedback;
-        const placeholder = finished ? 'Well done!' : 'Guess';
+        const message = this.messages[this.state.message];
+        const finished = this.state.message === 'finished';
+        const key = this.state.nAttempts;  // forces react to retrigger animation
         return (
             <div className='card'>
                 <div className='tree'>
@@ -143,16 +154,16 @@ class Card extends React.Component {
                         showStar={finished}
                     />
                     <div className='guess'>
-                        <form onSubmit={(event) => this.attempt(event)}>
-                            <div className='feedback'>
-                                <label>{feedback}</label>
+                        <form onSubmit={(event) => this.attempt(event)} autoComplete='off'>
+                            <div key={key} className={`message-${this.state.message}`}>
+                                <label>{message}</label>
                             </div>
                             <div className='attempt'>
                                 <input
                                     type='text'
                                     disabled={finished}
                                     id='guess'
-                                    placeholder={placeholder}
+                                    placeholder={finished ? 'Well done!' : 'Guess'}
                                 />
                             </div>
                         </form>
