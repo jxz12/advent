@@ -22,6 +22,7 @@ body {
 
 .present-locked,
 .present-unlocked,
+.present-opened,
 .present-star,
 .present-trunk {
   border: 1px solid #999;
@@ -41,14 +42,18 @@ body {
   background: #5d5;
 }
 .present-unlocked {
-  background: #fff;
+  background: #faa;
+  cursor: pointer;
+}
+.present-opened {
+  background: #fcfffc;
 }
 .present-star {
   border: 0px;
 }
 .present-trunk {
   border: 0px;
-  background: #833;
+  background: #742;
 }
 .guess,
 .feedback,

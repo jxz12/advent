@@ -10,9 +10,16 @@ class Present extends React.Component {
         };
     }
     render() {
+        const state = this.props.locked
+            ? 'locked'
+            : this.state.opened
+                 ? 'opened'
+                 : 'unlocked'
+        ;
         return (
             <button
-                className={`present-${this.props.locked ? 'locked' : 'unlocked'}`}
+                className={`present-${state}`}
+                disabled={this.props.locked}
                 onClick={() => this.open()}
             >
                 {this.state.opened ? this.props.contents : this.props.label}
@@ -20,11 +27,9 @@ class Present extends React.Component {
         );
     }
     open() {
-        if (!this.props.locked) {
-            this.setState({
-                opened: true,
-            });
-        }
+        this.setState({
+            opened: true,
+        });
     }
 }
 
