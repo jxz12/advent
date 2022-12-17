@@ -1,44 +1,69 @@
 body {
-    font: 14px "Century Gothic", Futura, sans-serif;
-    margin: 20px;
-  }
-  
-  ol, ul {
-    padding-left: 30px;
-  }
-  
-  .tree-row:after {
-    clear: both;
-    content: "";
-    display: table;
-  }
-  
-  .present-locked, .present-unlocked {
-    border: 1px solid #999;
-    float: left;
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 34px;
-    width: 100px;
-    height: 100px;
-    margin-right: -1px;
-    margin-top: -1px;
-    padding: 0;
-    text-align: center;
-  }
-  .present-locked {
-    background: #5d5;
-  }
-  .present-unlocked {
-    background: #fff;
-  }
-  
-  .card {
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .card-input {
-    margin-left: 20px;
-  }
-  
+  font: 24px 'Century Gothic', Futura, sans-serif;
+  margin: 20px;
+}
+
+.card {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.tree-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.tree-row:after {
+  clear: both;
+  content: '';
+}
+
+.present-locked,
+.present-unlocked,
+.present-star,
+.present-trunk {
+  border: 1px solid #999;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  width: 100px;
+  height: 100px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+}
+
+.present-locked {
+  background: #5d5;
+}
+.present-unlocked {
+  background: #fff;
+}
+.present-star {
+  border: 0px;
+}
+.present-trunk {
+  border: 0px;
+  background: #833;
+}
+.guess,
+.feedback,
+.attempt {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.guess {
+  margin-top: 50px;
+}
+.attempt {
+  margin-top: 25px;
+}
+input {
+  font-size: 20px;
+  text-align: center;
+}
