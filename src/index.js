@@ -133,6 +133,7 @@ class Card extends React.Component {
     render() {
         const finished = this.state.nSolved >= this.puzzles.length
         const feedback = finished ? '🎄 🧑‍🎄 ❄️ Fröhliche Weihnachten! 🎁 💶 ☃️' : this.state.feedback;
+        const placeholder = finished ? 'Well done!' : 'Guess';
         return (
             <div className='card'>
                 <div className='tree'>
@@ -151,7 +152,7 @@ class Card extends React.Component {
                                     type='text'
                                     disabled={finished}
                                     id='guess'
-                                    placeholder='Guess'
+                                    placeholder={placeholder}
                                 />
                             </div>
                         </form>
