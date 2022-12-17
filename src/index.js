@@ -163,7 +163,7 @@ class Card extends React.Component {
                                     type='text'
                                     disabled={finished}
                                     id='guess'
-                                    placeholder={finished ? 'Well done!' : 'Guess'}
+                                    placeholder={finished ? 'Well done!' : 'Guess here'}
                                 />
                             </div>
                         </form>
